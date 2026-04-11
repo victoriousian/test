@@ -1,0 +1,15 @@
+63f7b34db8d8cdea90c76aacccf841ec
+::res://::1775927641
+README_procedural_character.md::TextFile::-1::1775919294::0::1::::<><><>0<>0<><>::
+::res://scenes/::1775919294
+procedural_character_demo.tscn::PackedScene::-1::1775919294::0::1::::<><><>0<>0<><>::res://scripts/demo_controller.gd<>res://scripts/procedural_character.gd
+::res://scripts/::1775919294
+character_dna.gd::GDScript::5733384364608344426::1775919524::0::1::::CharacterDNA<>RefCounted<><>0<>0<><>::
+demo_controller.gd::GDScript::8728809971750342271::1775919524::0::1::::DemoController<>Node2D<><>0<>0<><>::
+frame_cache.gd::GDScript::7594232643368358705::1775919436::0::1::::FrameCache<>RefCounted<><>0<>0<><>::
+frame_compiler.gd::GDScript::5812597659893897875::1775919524::0::1::::FrameCompiler<>RefCounted<><>0<>0<><>::
+part_library.gd::GDScript::8866632434491599778::1775919574::0::1::::PartLibrary<>RefCounted<><>0<>0<><>::
+pixel_rasterizer.gd::GDScript::7560553393567167312::1775919491::0::1::::PixelRasterizer<>RefCounted<><>0<>0<><>::
+pose_solver.gd::GDScript::4610803501455842464::1775919436::0::1::::PoseSolver<>RefCounted<><>0<>0<><>::
+procedural_character.gd::GDScript::897819794362330546::1775919588::0::1::::ProceduralCharacter<>Node2D<><>0<>0<><>::
+procedural_character_self_check.gd::GDScript::700818023858585942::1775919436::0::1::::ProceduralCharacterSelfCheck<>RefCounted<><>0<>0<><>::

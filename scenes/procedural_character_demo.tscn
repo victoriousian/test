@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/demo_controller.gd" id="1_gkuwq"]
+[ext_resource type="Script" path="res://scripts/procedural_character.gd" id="2_6ohj3"]
+
+[node name="ProceduralCharacterDemo" type="Node2D"]
+script = ExtResource("1_gkuwq")
+
+[node name="Character" type="Node2D" parent="."]
+position = Vector2(320, 184)
+script = ExtResource("2_6ohj3")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 180)
+current = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="StatusLabel" type="Label" parent="CanvasLayer"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 624.0
+offset_bottom = 120.0
+theme_override_font_sizes/font_size = 14
+text = "Loading..."
