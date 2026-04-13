@@ -140,6 +140,67 @@ func set_palette_slot(slot_name: String, palette: Array) -> void:
 		"accessory", "accessory_palette":
 			accessory_palette = converted
 
+func to_dictionary() -> Dictionary:
+	return {
+		"seed": seed,
+		"body_type": body_type,
+		"skin_palette": _palette_to_html_array(skin_palette),
+		"hair_style": {
+			"front": int(hair_style.get("front", 0)),
+			"back": int(hair_style.get("back", 0))
+		},
+		"hair_palette": _palette_to_html_array(hair_palette),
+		"top_style": top_style,
+		"top_palette": _palette_to_html_array(top_palette),
+		"bottom_style": bottom_style,
+		"bottom_palette": _palette_to_html_array(bottom_palette),
+		"accessory_flags": accessory_flags,
+		"accessory_palette": _palette_to_html_array(accessory_palette),
+		"outline_color": outline_color.to_html(true),
+		"height_bias": height_bias,
+		"width_bias": width_bias
+	}
+
+func to_json_string() -> String:
+	return JSON.stringify(to_dictionary(), "\t")
+
+static func from_dictionary(data: Dictionary) -> CharacterDNA:
+	var dna := CharacterDNA.new()
+	dna.seed = int(data.get("seed", dna.seed))
+	var body_candidate := String(data.get("body_type", dna.body_type))
+	if BODY_TYPES.has(body_candidate):
+		dna.body_type = body_candidate
+	var hair_data_variant: Variant = data.get("hair_style", {})
+	if hair_data_variant is Dictionary:
+		var hair_data: Dictionary = hair_data_variant
+		dna.hair_style = {
+			"front": clampi(int(hair_data.get("front", 0)), 0, FRONT_HAIR_COUNT - 1),
+			"back": clampi(int(hair_data.get("back", 0)), 0, BACK_HAIR_COUNT - 1)
+		}
+	dna.top_style = clampi(int(data.get("top_style", dna.top_style)), 0, TOP_STYLE_COUNT - 1)
+	dna.bottom_style = clampi(int(data.get("bottom_style", dna.bottom_style)), 0, BOTTOM_STYLE_COUNT - 1)
+	dna.accessory_flags = int(data.get("accessory_flags", dna.accessory_flags))
+	dna.height_bias = clampi(int(data.get("height_bias", dna.height_bias)), -2, 2)
+	dna.width_bias = clampi(int(data.get("width_bias", dna.width_bias)), -2, 2)
+
+	dna.skin_palette = _palette_from_variant(data.get("skin_palette", []), SKIN_PRESETS[0])
+	dna.hair_palette = _palette_from_variant(data.get("hair_palette", []), HAIR_PRESETS[0])
+	dna.top_palette = _palette_from_variant(data.get("top_palette", []), TOP_PRESETS[0])
+	dna.bottom_palette = _palette_from_variant(data.get("bottom_palette", []), BOTTOM_PRESETS[0])
+	dna.accessory_palette = _palette_from_variant(data.get("accessory_palette", []), ACCESSORY_PRESETS[0])
+
+	var outline_value := String(data.get("outline_color", dna.outline_color.to_html(true)))
+	dna.outline_color = Color.from_string(outline_value, DEFAULT_OUTLINE_COLOR)
+	return dna
+
+static func from_json_string(json_text: String) -> CharacterDNA:
+	var json := JSON.new()
+	if json.parse(json_text) != OK:
+		return CharacterDNA.new()
+	if json.data is Dictionary:
+		return from_dictionary(json.data)
+	return CharacterDNA.new()
+
 func get_visual_hash() -> String:
 	return _fnv1a_string(to_signature_string(true, false))
 
@@ -185,6 +246,39 @@ static func get_bottom_palette_preset(index: int) -> Array[Color]:
 static func get_accessory_palette_preset(index: int) -> Array[Color]:
 	return _copy_palette(ACCESSORY_PRESETS[posmod(index, ACCESSORY_PRESETS.size())])
 
+static func get_palette_preset(slot_name: String, index: int) -> Array[Color]:
+	var presets := _get_palette_presets(slot_name)
+	if presets.is_empty():
+		return []
+	return _copy_palette(presets[posmod(index, presets.size())])
+
+static func get_palette_preset_count(slot_name: String) -> int:
+	return _get_palette_presets(slot_name).size()
+
+static func get_palette_preset_index(slot_name: String, palette: Array) -> int:
+	var normalized := _normalize_palette_array(palette)
+	if normalized.is_empty():
+		return 0
+	var target_signature := _palette_signature_static(normalized)
+	var presets := _get_palette_presets(slot_name)
+	for index in range(presets.size()):
+		if _palette_signature_static(_copy_palette(presets[index])) == target_signature:
+			return index
+	return 0
+
+static func _get_palette_presets(slot_name: String) -> Array:
+	match slot_name:
+		"skin", "skin_palette":
+			return SKIN_PRESETS
+		"top", "top_palette":
+			return TOP_PRESETS
+		"bottom", "bottom_palette":
+			return BOTTOM_PRESETS
+		"accessory", "accessory_palette":
+			return ACCESSORY_PRESETS
+		_:
+			return HAIR_PRESETS
+
 static func _copy_palette(source: Array) -> Array[Color]:
 	var output: Array[Color] = []
 	for entry in source:
@@ -197,7 +291,26 @@ static func _normalize_palette_array(source: Array) -> Array[Color]:
 		output.append(entry if entry is Color else Color(entry))
 	return output
 
+static func _palette_from_variant(source: Variant, fallback: Array) -> Array[Color]:
+	if source is Array and not source.is_empty():
+		var converted := _normalize_palette_array(source)
+		if not converted.is_empty():
+			return converted
+	return _copy_palette(fallback)
+
+static func _palette_to_html_array(source: Array[Color]) -> Array[String]:
+	var output: Array[String] = []
+	for color in source:
+		output.append(color.to_html(true))
+	return output
+
 func _palette_signature(palette: Array[Color]) -> String:
+	var parts: Array[String] = []
+	for color in palette:
+		parts.append(color.to_html(true))
+	return ",".join(parts)
+
+static func _palette_signature_static(palette: Array[Color]) -> String:
 	var parts: Array[String] = []
 	for color in palette:
 		parts.append(color.to_html(true))

@@ -54,3 +54,29 @@ func set_palette_slot(slot_name: String, palette: Array) -> void:
 	dna.set_palette_slot(slot_name, palette)
 	if is_inside_tree():
 		rebuild_frames()
+
+func get_dna_copy() -> CharacterDNA:
+	return dna.clone()
+
+func get_dna_dictionary() -> Dictionary:
+	return dna.to_dictionary()
+
+func get_dna_json_string() -> String:
+	return dna.to_json_string()
+
+func set_dna_from_dictionary(data: Dictionary) -> void:
+	set_dna(CharacterDNA.from_dictionary(data))
+
+func set_dna_from_json_string(json_text: String) -> void:
+	set_dna(CharacterDNA.from_json_string(json_text))
+
+func apply_motion_vector(velocity: Vector2, idle_state: String = "idle", moving_state: String = "walk") -> void:
+	if velocity.length_squared() <= 0.0001:
+		play_animation_state(idle_state, current_direction)
+		return
+	play_animation_state(moving_state, resolve_direction_from_vector(velocity))
+
+func resolve_direction_from_vector(velocity: Vector2) -> String:
+	if absf(velocity.x) > absf(velocity.y):
+		return "right" if velocity.x >= 0.0 else "left"
+	return "down" if velocity.y >= 0.0 else "up"
