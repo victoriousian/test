@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/character_customization_panel.gd" id="1_0t5tr"]
+
+[node name="CharacterCustomizationPanel" type="Control"]
+custom_minimum_size = Vector2(288, 440)
+offset_right = 288.0
+offset_bottom = 440.0
+script = ExtResource("1_0t5tr")

@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/procedural_character.tscn" id="1_t0w2g"]
+[ext_resource type="PackedScene" path="res://scenes/character_customization_panel.tscn" id="2_w4v5l"]
+
+[node name="CharacterCustomizationDemo" type="Node2D"]
+
+[node name="Character" parent="." instance=ExtResource("1_t0w2g")]
+position = Vector2(428, 188)
+scale = Vector2(4, 4)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 180)
+current = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CustomizationPanel" parent="CanvasLayer" instance=ExtResource("2_w4v5l")]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 304.0
+offset_bottom = 344.0
+character_path = NodePath("../../Character")
+
+[node name="HintLabel" type="Label" parent="CanvasLayer"]
+offset_left = 332.0
+offset_top = 18.0
+offset_right = 624.0
+offset_bottom = 72.0
+theme_override_font_sizes/font_size = 14
+text = "This scene mirrors how to drop the preview and the panel into another Godot project.\nUse character.get_dna_dictionary() to save the result."

@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/procedural_character.gd" id="1_b6g1l"]
+
+[node name="ProceduralCharacter" type="Node2D"]
+script = ExtResource("1_b6g1l")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+centered = false
+position = Vector2(-16, -16)
+texture_filter = 0
