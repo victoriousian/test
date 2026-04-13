@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/game_integration_demo_controller.gd" id="1_r2j0u"]
+[ext_resource type="PackedScene" path="res://scenes/procedural_character.tscn" id="2_l4x7k"]
+[ext_resource type="PackedScene" path="res://scenes/character_customization_panel.tscn" id="3_q0m8p"]
+
+[node name="GameIntegrationDemo" type="Node2D"]
+script = ExtResource("1_r2j0u")
+
+[node name="PreviewCharacter" parent="." instance=ExtResource("2_l4x7k")]
+position = Vector2(430, 188)
+scale = Vector2(4, 4)
+
+[node name="WorldCharacter" parent="." instance=ExtResource("2_l4x7k")]
+position = Vector2(620, 346)
+scale = Vector2(4, 4)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(480, 270)
+current = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CustomizationPanel" parent="CanvasLayer" instance=ExtResource("3_q0m8p")]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 304.0
+offset_bottom = 520.0
+character_path = NodePath("../../PreviewCharacter")
